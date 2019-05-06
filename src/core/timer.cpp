@@ -16,5 +16,11 @@ void Timer::start()
     spdlog::info("Timer started. Initial value: {}", d_start.time_since_epoch().count());
 }
 
+std::chrono::microseconds Timer::split() const
+{
+    auto now = std::chrono::steady_clock::now();
+    return std::chrono::duration_cast<std::chrono::microseconds>(now - d_start);
+}
+
 } // end namespace core
 } // end namespace csplit

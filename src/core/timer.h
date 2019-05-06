@@ -13,6 +13,7 @@ private:
 public:
     Timer();
     void start();
+    std::chrono::microseconds split() const;
 };
 
 }
