@@ -8,5 +8,5 @@ os:
   - osx
   - windows
 before_install:
-  - git clone git@github.com:microsoft/vcpkg.git
+  - git clone https://github.com/microsoft/vcpkg.git
   - cd vcpkg
