@@ -10,3 +10,5 @@ os:
 before_install:
   - git clone https://github.com/microsoft/vcpkg.git
   - cd vcpkg
+  - if [ $TRAVIS_OS_NAME == linux ]; then ./bootstrap-vcpkg.sh && sudo ./vcpkg integrate install; fi
+  
