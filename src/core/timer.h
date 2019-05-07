@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <vector>
 
 namespace csplit {
 namespace core {
@@ -8,12 +9,15 @@ namespace core {
 class Timer
 {
 private:
-    std::chrono::steady_clock::time_point d_start;
-    
+    using SteadyPoint = std::chrono::steady_clock::time_point;
+    SteadyPoint d_start;
+    std::vector<SteadyPoint> d_splits;
 public:
     Timer();
     void start();
-    std::chrono::microseconds split() const;
+    std::chrono::microseconds elapsed() const;
+    std::chrono::microseconds split();
+    std::chrono::microseconds elapsedSince(SteadyPoint point) const;
 };
 
 }
