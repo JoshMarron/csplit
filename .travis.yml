@@ -1,0 +1,12 @@
+language: cpp
+sudo: required
+dist: xenial
+compiler:
+  - gcc
+os:
+  - linux
+  - osx
+  - windows
+before_install:
+  - git clone git@github.com:microsoft/vcpkg.git
+  - cd vcpkg
