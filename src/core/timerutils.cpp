@@ -5,8 +5,9 @@
 
 namespace csplit {
 namespace core {
+namespace timerutils {
 
-std::string TimerUtils::microseconds2string(std::chrono::microseconds input, bool displayMicroseconds)
+std::string microseconds2string(std::chrono::microseconds input, bool displayMicroseconds)
 {
     using std::chrono::duration_cast;
     auto hours = duration_cast<std::chrono::hours>(input);
@@ -29,5 +30,6 @@ std::string TimerUtils::microseconds2string(std::chrono::microseconds input, boo
     return ss.str();
 }
 
+} // end namespace timerutils
 } // end namespace core
 } // end namespace csplit

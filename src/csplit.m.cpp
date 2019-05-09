@@ -18,12 +18,12 @@ int main()
     auto splitTime = t.split();
     
     spdlog::info("Timer split at {}", splitTime.count());
-    spdlog::info("Timer split at {}", csplit::core::TimerUtils::microseconds2string(splitTime));
+    spdlog::info("Timer split at {}", csplit::core::timerutils::microseconds2string(splitTime));
 
     for (int i = 0; i < 100; ++i)
     {
         auto elapsedTime = t.elapsed();
-        spdlog::info("{}", csplit::core::TimerUtils::microseconds2string(elapsedTime));
+        spdlog::info("{}", csplit::core::timerutils::microseconds2string(elapsedTime));
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
