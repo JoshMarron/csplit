@@ -29,6 +29,9 @@ private:
     PossibleTime d_currentTime;
     PossibleTime d_cumulativeTime;
     PossibleTime d_cumulativePbTime;
+
+    SplitState updateEmptySplit(std::chrono::microseconds time, 
+                                std::chrono::microseconds currentRunTime);
 public:
     Split(std::string name);
     Split(std::string name, 
@@ -40,6 +43,7 @@ public:
     const PossibleTime& goldTime() const;
     const PossibleTime& pbTime() const;
     const PossibleTime& thisRunTime() const;
+    const PossibleTime& thisRunCumulativeTime() const;
 
     void changeSplitName(std::string name);
     SplitState updateTime(std::chrono::microseconds time,

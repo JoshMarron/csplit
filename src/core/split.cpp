@@ -31,25 +31,36 @@ SplitState Split::updateTime(std::chrono::microseconds splitTime,
     d_currentTime = splitTime;
 
     // Is this a gold split?
-    if (splitTime < d_goldTime)
+    // Alternatively, is this an empty split? An empty split will always gold.
+    if (splitTime < d_goldTime.value_or(std::chrono::microseconds::max()))
     {
-        return currentRunTime > d_cumulativePbTime ? SplitState::GoldBehind : SplitState::GoldAhead;
+        return currentRunTime > d_cumulativePbTime.value_or(std::chrono::microseconds::max()) ? 
+                                SplitState::GoldBehind : 
+                                SplitState::GoldAhead;
     }
 
-    // Otherwise, we check how the run is doing vs. the PB
-    // If the current run time is faster than cumulative PB
-    if (currentRunTime < d_cumulativePbTime)
+    // Otherwise, we check how fast the split is vs the PB
+    if (splitTime < d_pbTime)
     {
-        return splitTime > d_pbTime ? SplitState::AheadPbLosingTime : SplitState::AheadPbGainingTime;  
+        return currentRunTime < d_cumulativePbTime ? 
+                                SplitState::AheadPbGainingTime : 
+                                SplitState::BehindPbGainingTime;  
     }
-    // If the current run is slower than cumulative PB
-    else if (currentRunTime > d_cumulativePbTime)
+    else if (splitTime > d_pbTime)
     {
-        return splitTime > d_pbTime ? SplitState::BehindPbLosingTime : SplitState::BehindPbGainingTime;
+        return currentRunTime < d_cumulativePbTime ? 
+                                SplitState::AheadPbLosingTime : 
+                                SplitState::BehindPbLosingTime;
     }
     
     // Otherwise, we must be equalling the PB
     return SplitState::EqualPb;
+}
+
+SplitState Split::updateEmptySplit(std::chrono::microseconds time,
+                                   std::chrono::microseconds currentRunTime)
+{
+    return SplitState::GoldAhead;
 }
 
 void Split::changeSplitName(std::string name)
@@ -75,6 +86,11 @@ const Split::PossibleTime& Split::pbTime() const
 const Split::PossibleTime& Split::thisRunTime() const
 {
     return d_currentTime;
+}
+
+const Split::PossibleTime& Split::thisRunCumulativeTime() const
+{
+    return d_cumulativeTime;
 }
 
 } // end namespace core
