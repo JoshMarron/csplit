@@ -1,0 +1,1 @@
+add_test(CoreTests core/csplitcore.t.tsk)

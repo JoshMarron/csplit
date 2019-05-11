@@ -17,9 +17,8 @@ BETTER_ENUM(SplitState, int,
             GoldAhead,
             GoldBehind);
 
-// A POD struct to represent a split
-// A split has a name, a best time and possibly a current run time? Does this belong in the run or
-// the split?
+// A class to represent a split
+// A split has a name, a best (gold) time, a pb time and a time for this run
 class Split
 {
 private:
