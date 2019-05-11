@@ -47,3 +47,21 @@ TEST(TestSplit, TestUpdateGoldAhead)
     // THEN
     EXPECT_EQ(res._value, core::SplitState::GoldAhead);
 }
+
+TEST(TestSplit, TestUpdateGoldBehind)
+{
+    // GIVEN
+    auto goldTime = microseconds(1100);
+    auto pbTime = microseconds(1300);
+    auto cumulativePbTime = microseconds(14000);
+    auto newGold = microseconds(1000);
+    auto thisRunTime = microseconds(16000);
+
+    auto testSplit = core::Split("testSplit", goldTime, pbTime, cumulativePbTime);
+
+    // WHEN
+    auto res = testSplit.updateTime(newGold, thisRunTime);
+
+    // THEN
+    EXPECT_EQ(res._value, core::SplitState::GoldBehind);
+}
