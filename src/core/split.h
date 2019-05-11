@@ -9,6 +9,7 @@ namespace csplit {
 namespace core {
 
 BETTER_ENUM(SplitState, int,
+            NotReached,
             EqualPb,
             AheadPbGainingTime,
             AheadPbLosingTime,
@@ -24,6 +25,7 @@ class Split
 private:
     using PossibleTime = std::optional<std::chrono::microseconds>;
     std::string d_name;
+    SplitState d_state;
     PossibleTime d_goldTime;
     PossibleTime d_pbTime;
     PossibleTime d_currentTime;
@@ -40,6 +42,7 @@ public:
           std::chrono::microseconds cumulativePbTime);
 
     const std::string& name() const;
+    SplitState state() const;
     const PossibleTime& goldTime() const;
     const PossibleTime& pbTime() const;
     const PossibleTime& thisRunTime() const;

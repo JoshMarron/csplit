@@ -2,6 +2,7 @@
 #include <core/split.h>
 
 using namespace csplit;
+using microseconds = std::chrono::microseconds;
 
 TEST(TestSplit, TestUpdateEmptySplit)
 {
@@ -27,4 +28,22 @@ TEST(TestSplit, TestUpdateEqualPb)
     EXPECT_EQ(testSplit.thisRunCumulativeTime(), std::chrono::microseconds(14000));
     EXPECT_EQ(testSplit.pbTime(), testSplit.thisRunTime());
     EXPECT_EQ(testSplit.goldTime(), goldTime);
+}
+
+TEST(TestSplit, TestUpdateGoldAhead)
+{
+    // GIVEN
+    auto goldTime = microseconds(1100);
+    auto pbTime = microseconds(1300);
+    auto cumulativePbTime = microseconds(14000);
+    auto newGold = microseconds(1000);
+    auto thisRunTime = microseconds(13500);
+    
+    auto testSplit = core::Split("testSplit", goldTime, pbTime, cumulativePbTime);
+
+    // WHEN
+    auto res = testSplit.updateTime(newGold, thisRunTime);
+
+    // THEN
+    EXPECT_EQ(res._value, core::SplitState::GoldAhead);
 }

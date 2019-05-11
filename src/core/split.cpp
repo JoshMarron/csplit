@@ -5,6 +5,7 @@ namespace core {
 
 Split::Split(std::string name)
 : d_name(name)
+, d_state(SplitState::NotReached)
 , d_goldTime()
 , d_pbTime()
 , d_currentTime()
@@ -17,6 +18,7 @@ Split::Split(std::string name,
              std::chrono::microseconds pbTime,
              std::chrono::microseconds cumulativePbTime)
 : d_name(name)
+, d_state(SplitState::NotReached)
 , d_goldTime(goldTime)
 , d_pbTime(pbTime)
 , d_currentTime()
@@ -34,27 +36,30 @@ SplitState Split::updateTime(std::chrono::microseconds splitTime,
     // Alternatively, is this an empty split? An empty split will always gold.
     if (splitTime < d_goldTime.value_or(std::chrono::microseconds::max()))
     {
-        return currentRunTime > d_cumulativePbTime.value_or(std::chrono::microseconds::max()) ? 
+        d_state = currentRunTime > d_cumulativePbTime.value_or(std::chrono::microseconds::max()) ? 
                                 SplitState::GoldBehind : 
                                 SplitState::GoldAhead;
     }
 
     // Otherwise, we check how fast the split is vs the PB
-    if (splitTime < d_pbTime)
+    else if (splitTime < d_pbTime)
     {
-        return currentRunTime < d_cumulativePbTime ? 
+        d_state = currentRunTime < d_cumulativePbTime ? 
                                 SplitState::AheadPbGainingTime : 
                                 SplitState::BehindPbGainingTime;  
     }
     else if (splitTime > d_pbTime)
     {
-        return currentRunTime < d_cumulativePbTime ? 
+        d_state = currentRunTime < d_cumulativePbTime ? 
                                 SplitState::AheadPbLosingTime : 
                                 SplitState::BehindPbLosingTime;
     }
+    else
+    {
+        d_state = SplitState::EqualPb;
+    }
     
-    // Otherwise, we must be equalling the PB
-    return SplitState::EqualPb;
+    return d_state;
 }
 
 SplitState Split::updateEmptySplit(std::chrono::microseconds time,
@@ -71,6 +76,11 @@ void Split::changeSplitName(std::string name)
 const std::string& Split::name() const
 {
     return d_name;
+}
+
+SplitState Split::state() const
+{
+    return d_state;
 }
 
 const Split::PossibleTime& Split::goldTime() const
