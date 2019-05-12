@@ -26,8 +26,28 @@ Split::Split(std::string name,
 , d_pbSplitTime(cumulativePbTime)
 {}
 
-SplitState Split::updateTime(std::chrono::microseconds segmentTime, 
-                             std::chrono::microseconds splitTime)
+SplitState Split::updateTime(std::chrono::microseconds splitTime)
+{
+    d_splitTime = splitTime;
+
+    if (splitTime < d_pbSplitTime)
+    {
+        d_state = SplitState::AheadPbNoData;
+    }
+    else if (splitTime > d_pbSplitTime)
+    {
+        d_state = SplitState::BehindPbNoData;
+    }
+    else
+    {
+        d_state = SplitState::EqualPb;
+    }
+    
+    return d_state;
+}
+
+SplitState Split::updateTime(std::chrono::microseconds splitTime, 
+                             std::chrono::microseconds segmentTime)
 {
     d_splitTime = splitTime;
     d_segmentTime = segmentTime;

@@ -30,5 +30,19 @@ void Speedrun::start()
     d_started = true;
 }
 
+SplitState Speedrun::split()
+{
+    auto split = d_timer.split();
+    std::chrono::microseconds segment;
+    if (d_currentSplit == 0)
+    {
+        segment = split;
+    }
+    else
+    {
+        auto previousSplit = d_splits[d_currentSplit].thisSplitTime();
+    }
+}
+
 } // end namespace core
 } // end namespace csplit

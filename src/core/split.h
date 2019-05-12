@@ -11,6 +11,8 @@ namespace core {
 BETTER_ENUM(SplitState, int,
             NotReached,
             EqualPb,
+            AheadPbNoData,
+            BehindPbNoData,
             AheadPbGainingTime,
             AheadPbLosingTime,
             BehindPbGainingTime,
@@ -47,8 +49,9 @@ public:
     const PossibleTime& thisSplitTime() const;
 
     void changeSplitName(std::string name);
-    SplitState updateTime(std::chrono::microseconds time,
-                          std::chrono::microseconds currentRunTime);
+    SplitState updateTime(std::chrono::microseconds splitTime);
+    SplitState updateTime(std::chrono::microseconds splitTime,
+                          std::chrono::microseconds segmentTime);
     SplitState resetSplit();
 };
 
