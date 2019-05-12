@@ -62,12 +62,6 @@ SplitState Split::updateTime(std::chrono::microseconds splitTime,
     return d_state;
 }
 
-SplitState Split::updateEmptySplit(std::chrono::microseconds time,
-                                   std::chrono::microseconds currentRunTime)
-{
-    return SplitState::GoldAhead;
-}
-
 void Split::changeSplitName(std::string name)
 {
     d_name = name;
