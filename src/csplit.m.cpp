@@ -5,6 +5,7 @@
 
 #include "core/timer.h"
 #include "core/timerutils.h"
+#include "core/speedrun.h"
 
 int main()
 {
@@ -26,6 +27,9 @@ int main()
         spdlog::info("{}", csplit::core::timerutils::microseconds2string(elapsedTime));
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
+
+    auto run = csplit::core::Speedrun();
+    run.start();
 
     return 0;
 }

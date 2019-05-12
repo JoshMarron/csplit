@@ -11,7 +11,6 @@ class Timer
 private:
     using SteadyPoint = std::chrono::steady_clock::time_point;
     SteadyPoint d_start;
-    std::vector<SteadyPoint> d_splits;
 public:
     Timer();
     void start();

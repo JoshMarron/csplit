@@ -1,7 +1,6 @@
 #include "timer.h"
 
 #include <spdlog/spdlog.h>
-#include <iomanip>
 
 namespace csplit {
 namespace core {
@@ -19,7 +18,6 @@ void Timer::start()
 std::chrono::microseconds Timer::split()
 {
     auto now = std::chrono::steady_clock::now();
-    d_splits.push_back(now);
     spdlog::debug("Split made. Raw value: {}", now.time_since_epoch().count()); 
     return std::chrono::duration_cast<std::chrono::microseconds>(now - d_start);
 }
