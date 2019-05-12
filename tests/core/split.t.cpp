@@ -141,3 +141,22 @@ TEST(TestSplit, TestUpdateBehindLosing)
     // THEN
     EXPECT_EQ(res._value, core::SplitState::BehindPbLosingTime);
 }
+
+TEST(TestSplit, TestResetSplit)
+{
+    auto testSplit = core::Split("testSplit");
+
+    EXPECT_EQ(testSplit.state()._value, core::SplitState::NotReached);   
+
+    auto res = testSplit.updateTime(microseconds(1400), microseconds(15000));
+    EXPECT_EQ(res._value, core::SplitState::GoldAhead);
+    EXPECT_TRUE(testSplit.thisRunTime().has_value());
+    EXPECT_TRUE(testSplit.thisRunCumulativeTime().has_value());
+
+    res = testSplit.resetSplit();
+    EXPECT_EQ(res._value, core::SplitState::NotReached);
+
+    EXPECT_EQ(testSplit.state()._value, core::SplitState::NotReached);
+    EXPECT_FALSE(testSplit.thisRunTime().has_value());
+    EXPECT_FALSE(testSplit.thisRunCumulativeTime().has_value());
+}

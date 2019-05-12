@@ -48,6 +48,7 @@ public:
     void changeSplitName(std::string name);
     SplitState updateTime(std::chrono::microseconds time,
                           std::chrono::microseconds currentRunTime);
+    SplitState resetSplit();
 };
 
 } // end namespace core

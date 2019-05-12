@@ -62,6 +62,15 @@ SplitState Split::updateTime(std::chrono::microseconds splitTime,
     return d_state;
 }
 
+SplitState Split::resetSplit()
+{
+    d_state = SplitState::NotReached;
+    d_currentTime.reset();
+    d_cumulativeTime.reset();
+
+    return d_state;
+}
+
 void Split::changeSplitName(std::string name)
 {
     d_name = name;
