@@ -7,10 +7,10 @@ Split::Split(std::string name)
 : d_name(name)
 , d_state(SplitState::NotReached)
 , d_goldTime()
-, d_pbTime()
-, d_currentTime()
-, d_cumulativeTime()
-, d_cumulativePbTime()
+, d_pbSegmentTime()
+, d_segmentTime()
+, d_splitTime()
+, d_pbSplitTime()
 {}
 
 Split::Split(std::string name, 
@@ -20,37 +20,37 @@ Split::Split(std::string name,
 : d_name(name)
 , d_state(SplitState::NotReached)
 , d_goldTime(goldTime)
-, d_pbTime(pbTime)
-, d_currentTime()
-, d_cumulativeTime()
-, d_cumulativePbTime(cumulativePbTime)
+, d_pbSegmentTime(pbTime)
+, d_segmentTime()
+, d_splitTime()
+, d_pbSplitTime(cumulativePbTime)
 {}
 
-SplitState Split::updateTime(std::chrono::microseconds splitTime, 
-                             std::chrono::microseconds currentRunTime)
+SplitState Split::updateTime(std::chrono::microseconds segmentTime, 
+                             std::chrono::microseconds splitTime)
 {
-    d_cumulativeTime = currentRunTime;
-    d_currentTime = splitTime;
+    d_splitTime = splitTime;
+    d_segmentTime = segmentTime;
 
     // Is this a gold split?
     // Alternatively, is this an empty split? An empty split will always gold.
-    if (splitTime < d_goldTime.value_or(std::chrono::microseconds::max()))
+    if (segmentTime < d_goldTime.value_or(std::chrono::microseconds::max()))
     {
-        d_state = currentRunTime > d_cumulativePbTime.value_or(std::chrono::microseconds::max()) ? 
+        d_state = splitTime > d_pbSplitTime.value_or(std::chrono::microseconds::max()) ? 
                                 SplitState::GoldBehind : 
                                 SplitState::GoldAhead;
     }
 
     // Otherwise, we check how fast the split is vs the PB
-    else if (splitTime < d_pbTime)
+    else if (segmentTime < d_pbSegmentTime)
     {
-        d_state = currentRunTime < d_cumulativePbTime ? 
+        d_state = splitTime < d_pbSplitTime ? 
                                 SplitState::AheadPbGainingTime : 
                                 SplitState::BehindPbGainingTime;  
     }
-    else if (splitTime > d_pbTime)
+    else if (segmentTime > d_pbSegmentTime)
     {
-        d_state = currentRunTime < d_cumulativePbTime ? 
+        d_state = splitTime < d_pbSplitTime ? 
                                 SplitState::AheadPbLosingTime : 
                                 SplitState::BehindPbLosingTime;
     }
@@ -65,8 +65,8 @@ SplitState Split::updateTime(std::chrono::microseconds splitTime,
 SplitState Split::resetSplit()
 {
     d_state = SplitState::NotReached;
-    d_currentTime.reset();
-    d_cumulativeTime.reset();
+    d_segmentTime.reset();
+    d_splitTime.reset();
 
     return d_state;
 }
@@ -91,19 +91,19 @@ const Split::PossibleTime& Split::goldTime() const
     return d_goldTime;
 }
 
-const Split::PossibleTime& Split::pbTime() const
+const Split::PossibleTime& Split::pbSegmentTime() const
 {
-    return d_pbTime;
+    return d_pbSegmentTime;
 }
 
-const Split::PossibleTime& Split::thisRunTime() const
+const Split::PossibleTime& Split::thisSegmentTime() const
 {
-    return d_currentTime;
+    return d_segmentTime;
 }
 
-const Split::PossibleTime& Split::thisRunCumulativeTime() const
+const Split::PossibleTime& Split::thisSplitTime() const
 {
-    return d_cumulativeTime;
+    return d_splitTime;
 }
 
 } // end namespace core

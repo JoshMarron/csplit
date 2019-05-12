@@ -27,10 +27,10 @@ private:
     std::string d_name;
     SplitState d_state;
     PossibleTime d_goldTime;
-    PossibleTime d_pbTime;
-    PossibleTime d_currentTime;
-    PossibleTime d_cumulativeTime;
-    PossibleTime d_cumulativePbTime;
+    PossibleTime d_pbSegmentTime;
+    PossibleTime d_segmentTime;
+    PossibleTime d_splitTime;
+    PossibleTime d_pbSplitTime;
 public:
     Split(std::string name);
     Split(std::string name, 
@@ -41,9 +41,10 @@ public:
     const std::string& name() const;
     SplitState state() const;
     const PossibleTime& goldTime() const;
-    const PossibleTime& pbTime() const;
-    const PossibleTime& thisRunTime() const;
-    const PossibleTime& thisRunCumulativeTime() const;
+    const PossibleTime& pbSegmentTime() const;
+    const PossibleTime& pbSplitTime() const;
+    const PossibleTime& thisSegmentTime() const;
+    const PossibleTime& thisSplitTime() const;
 
     void changeSplitName(std::string name);
     SplitState updateTime(std::chrono::microseconds time,
