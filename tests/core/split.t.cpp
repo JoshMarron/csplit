@@ -65,3 +65,79 @@ TEST(TestSplit, TestUpdateGoldBehind)
     // THEN
     EXPECT_EQ(res._value, core::SplitState::GoldBehind);
 }
+
+TEST(TestSplit, TestUpdateAheadGaining)
+{
+    // GIVEN
+    auto goldTime = microseconds(1100);
+    auto pbTime = microseconds(1300);
+    auto cumulativePbTime = microseconds(15000);
+
+    auto thisSplit = microseconds(1200);
+    auto thisRunCumulative = microseconds(14500);
+
+    auto testSplit = core::Split("testSplit", goldTime, pbTime, cumulativePbTime);
+
+    // WHEN
+    auto res = testSplit.updateTime(thisSplit, thisRunCumulative);
+
+    // THEN
+    EXPECT_EQ(res._value, core::SplitState::AheadPbGainingTime);
+}
+
+TEST(TestSplit, TestUpdateAheadLosing)
+{
+    // GIVEN
+    auto goldTime = microseconds(1100);
+    auto pbTime = microseconds(1300);
+    auto cumulativePbTime = microseconds(15000);
+
+    auto thisSplit = microseconds(1400);
+    auto thisRunCumulative = microseconds(14500);
+
+    auto testSplit = core::Split("testSplit", goldTime, pbTime, cumulativePbTime);
+
+    // WHEN
+    auto res = testSplit.updateTime(thisSplit, thisRunCumulative);
+
+    // THEN
+    EXPECT_EQ(res._value, core::SplitState::AheadPbLosingTime);
+}
+
+TEST(TestSplit, TestUpdateBehindGaining)
+{
+    // GIVEN
+    auto goldTime = microseconds(1100);
+    auto pbTime = microseconds(1300);
+    auto cumulativePbTime = microseconds(15000);
+
+    auto thisSplit = microseconds(1200);
+    auto thisRunCumulative = microseconds(16000);
+
+    auto testSplit = core::Split("testSplit", goldTime, pbTime, cumulativePbTime);
+
+    // WHEN
+    auto res = testSplit.updateTime(thisSplit, thisRunCumulative);
+
+    // THEN
+    EXPECT_EQ(res._value, core::SplitState::BehindPbGainingTime);
+}
+
+TEST(TestSplit, TestUpdateBehindLosing)
+{
+    // GIVEN
+    auto goldTime = microseconds(1100);
+    auto pbTime = microseconds(1300);
+    auto cumulativePbTime = microseconds(15000);
+
+    auto thisSplit = microseconds(1400);
+    auto thisRunCumulative = microseconds(16000);
+
+    auto testSplit = core::Split("testSplit", goldTime, pbTime, cumulativePbTime);
+
+    // WHEN
+    auto res = testSplit.updateTime(thisSplit, thisRunCumulative);
+
+    // THEN
+    EXPECT_EQ(res._value, core::SplitState::BehindPbLosingTime);
+}
