@@ -1,5 +1,6 @@
 #include "split.h"
 #include "logging.h"
+#include "timerutils.h"
 
 #include <spdlog/spdlog.h>
 
@@ -98,6 +99,23 @@ SplitState Split::resetSplit()
     SPDLOG_DEBUG("SPLIT {} RESET.", d_name);
 
     return d_state;
+}
+
+void Split::print(std::ostream& stream) const
+{
+    using microseconds = std::chrono::microseconds;
+    stream << "{[SPLIT] Name: " << d_name << ", "
+           << "State: " << d_state._name() << ", "
+           << "Gold Time: " 
+           << timerutils::microseconds2string(d_goldTime.value_or(microseconds(0))) << ", "
+           << "PB Segment Time: "
+           << timerutils::microseconds2string(d_pbSegmentTime.value_or(microseconds(0))) << ", "
+           << "This Segment Time: "
+           << timerutils::microseconds2string(d_segmentTime.value_or(microseconds(0))) << ", "
+           << "PB Split Time: "
+           << timerutils::microseconds2string(d_pbSplitTime.value_or(microseconds(0))) << ", "
+           << "This Split Time: "
+           << timerutils::microseconds2string(d_splitTime.value_or(microseconds(0))) << "}";
 }
 
 void Split::changeSplitName(std::string name)

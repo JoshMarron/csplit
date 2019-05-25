@@ -5,6 +5,8 @@
 #include <optional>
 #include <enum.h>
 
+#include <fmt/ostream.h>
+
 namespace csplit {
 namespace core {
 
@@ -53,7 +55,16 @@ public:
     SplitState updateTime(std::chrono::microseconds splitTime,
                           std::chrono::microseconds segmentTime);
     SplitState resetSplit();
+
+    void print(std::ostream& stream) const;
 };
+
+template<typename OStream>
+OStream& operator<<(OStream& stream, const core::Split& split)
+{
+    split.print(stream);
+    return stream;
+}
 
 } // end namespace core
 } // end namespace csplit

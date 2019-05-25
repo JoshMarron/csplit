@@ -1,5 +1,6 @@
 #include <chrono>
 #include <thread>
+#include <iostream>
 
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
 #define SPDLOG_DEBUG_ON
@@ -54,6 +55,7 @@ int main()
 
     auto split = csplit::core::Split("testSplit");
     split.updateTime(std::chrono::microseconds(15607434));
+    SPDLOG_INFO("Split is: {}", split);
 
     return 0;
 }
