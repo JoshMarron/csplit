@@ -7,25 +7,25 @@ using microseconds = std::chrono::microseconds;
 TEST(TestSplit, TestUpdateEmptySplit)
 {
     auto testSplit = core::Split("testSplit");
-    auto res = testSplit.updateTime(std::chrono::microseconds(12000), 
-                                    std::chrono::microseconds(1200));
+    auto res = testSplit.updateTime(microseconds(12000), 
+                                    microseconds(1200));
     
     EXPECT_EQ(res, core::SplitState::GoldAhead);
-    EXPECT_EQ(testSplit.thisSegmentTime(), std::chrono::microseconds(1200));
-    EXPECT_EQ(testSplit.thisSplitTime(), std::chrono::microseconds(12000));
+    EXPECT_EQ(testSplit.thisSegmentTime(), microseconds(1200));
+    EXPECT_EQ(testSplit.thisSplitTime(), microseconds(12000));
 }
 
 TEST(TestSplit, TestUpdateEqualPb)
 {
-    auto goldTime = std::chrono::microseconds(1100);
-    auto pbSegmentTime = std::chrono::microseconds(1300);
-    auto pbSplitTime = std::chrono::microseconds(13000);
+    auto goldTime = microseconds(1100);
+    auto pbSegmentTime = microseconds(1300);
+    auto pbSplitTime = microseconds(13000);
 
     auto testSplit = core::Split("testSplit", goldTime, pbSegmentTime, pbSplitTime);
     auto res = testSplit.updateTime(microseconds(14000), pbSegmentTime);
 
     EXPECT_EQ(res, core::SplitState::EqualPb);
-    EXPECT_EQ(testSplit.thisSplitTime(), std::chrono::microseconds(14000));
+    EXPECT_EQ(testSplit.thisSplitTime(), microseconds(14000));
     EXPECT_EQ(testSplit.pbSegmentTime(), testSplit.thisSegmentTime());
     EXPECT_EQ(testSplit.goldTime(), goldTime);
 }
