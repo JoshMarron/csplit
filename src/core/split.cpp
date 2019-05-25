@@ -1,4 +1,7 @@
 #include "split.h"
+#include "logging.h"
+
+#include <spdlog/spdlog.h>
 
 namespace csplit {
 namespace core {
@@ -43,6 +46,8 @@ SplitState Split::updateTime(std::chrono::microseconds splitTime)
         d_state = SplitState::EqualPb;
     }
     
+    SPDLOG_DEBUG("SPLIT MADE. Name: {} - Split time only: {} - Result: {}", 
+                 d_name, splitTime.count(), d_state._name());
     return d_state;
 }
 
@@ -79,6 +84,8 @@ SplitState Split::updateTime(std::chrono::microseconds splitTime,
         d_state = SplitState::EqualPb;
     }
     
+    SPDLOG_DEBUG("SPLIT MADE. Name: {} - Split time: {} - Segment time: {}. Result {}", 
+                 d_name, splitTime.count(), segmentTime.count(), d_state._name());
     return d_state;
 }
 
@@ -87,6 +94,8 @@ SplitState Split::resetSplit()
     d_state = SplitState::NotReached;
     d_segmentTime.reset();
     d_splitTime.reset();
+
+    SPDLOG_DEBUG("SPLIT {} RESET.", d_name);
 
     return d_state;
 }

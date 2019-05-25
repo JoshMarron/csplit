@@ -1,5 +1,6 @@
 #include "speedrun.h"
 #include "timerutils.h"
+#include "logging.h"
 
 #include <spdlog/spdlog.h>
 

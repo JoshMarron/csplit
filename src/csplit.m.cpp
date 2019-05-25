@@ -52,5 +52,8 @@ int main()
     auto run = csplit::core::Speedrun();
     run.start();
 
+    auto split = csplit::core::Split("testSplit");
+    split.updateTime(std::chrono::microseconds(15607434));
+
     return 0;
 }

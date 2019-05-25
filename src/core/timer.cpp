@@ -1,4 +1,5 @@
 #include "timer.h"
+#include "logging.h"
 
 #include <spdlog/spdlog.h>
 
@@ -18,7 +19,7 @@ void Timer::start()
 std::chrono::microseconds Timer::split()
 {
     auto now = std::chrono::steady_clock::now();
-    spdlog::debug("Split made. Raw value: {}", now.time_since_epoch().count()); 
+    SPDLOG_DEBUG("Split made. Raw value: {}", now.time_since_epoch().count()); 
     return std::chrono::duration_cast<std::chrono::microseconds>(now - d_start);
 }
 
