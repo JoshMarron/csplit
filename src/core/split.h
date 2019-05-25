@@ -1,5 +1,7 @@
 #pragma once
 
+#define BETTER_ENUMS_STRICT_CONVERSION
+
 #include <string>
 #include <chrono>
 #include <optional>
@@ -12,6 +14,7 @@ namespace core {
 
 BETTER_ENUM(SplitState, int,
             NotReached,
+            NoDataPossible,
             EqualPb,
             AheadPbNoData,
             BehindPbNoData,
@@ -39,8 +42,8 @@ public:
     Split(std::string name);
     Split(std::string name, 
           std::chrono::microseconds goldTime, 
-          std::chrono::microseconds pbTime,
-          std::chrono::microseconds cumulativePbTime);
+          std::chrono::microseconds pbSegmentTime,
+          std::chrono::microseconds pbSplitTime);
 
     const std::string& name() const;
     SplitState state() const;

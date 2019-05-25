@@ -19,22 +19,26 @@ Split::Split(std::string name)
 
 Split::Split(std::string name, 
              std::chrono::microseconds goldTime, 
-             std::chrono::microseconds pbTime,
-             std::chrono::microseconds cumulativePbTime)
+             std::chrono::microseconds pbSegmentTime,
+             std::chrono::microseconds pbSplitTime)
 : d_name(name)
 , d_state(SplitState::NotReached)
 , d_goldTime(goldTime)
-, d_pbSegmentTime(pbTime)
+, d_pbSegmentTime(pbSegmentTime)
 , d_segmentTime()
 , d_splitTime()
-, d_pbSplitTime(cumulativePbTime)
+, d_pbSplitTime(pbSplitTime)
 {}
 
 SplitState Split::updateTime(std::chrono::microseconds splitTime)
 {
     d_splitTime = splitTime;
 
-    if (splitTime < d_pbSplitTime)
+    if (!d_pbSplitTime.has_value())
+    {
+        d_state = SplitState::NoDataPossible;
+    }
+    else if (splitTime < d_pbSplitTime)
     {
         d_state = SplitState::AheadPbNoData;
     }
@@ -48,7 +52,7 @@ SplitState Split::updateTime(std::chrono::microseconds splitTime)
     }
     
     SPDLOG_DEBUG("SPLIT MADE. Name: {} - Split time only: {} - Result: {}", 
-                 d_name, splitTime.count(), d_state._name());
+                 d_name, splitTime.count(), d_state);
     return d_state;
 }
 
@@ -86,7 +90,7 @@ SplitState Split::updateTime(std::chrono::microseconds splitTime,
     }
     
     SPDLOG_DEBUG("SPLIT MADE. Name: {} - Split time: {} - Segment time: {}. Result {}", 
-                 d_name, splitTime.count(), segmentTime.count(), d_state._name());
+                 d_name, splitTime.count(), segmentTime.count(), d_state);
     return d_state;
 }
 
@@ -105,7 +109,7 @@ void Split::print(std::ostream& stream) const
 {
     using microseconds = std::chrono::microseconds;
     stream << "{[SPLIT] Name: " << d_name << ", "
-           << "State: " << d_state._name() << ", "
+           << "State: " << d_state << ", "
            << "Gold Time: " 
            << timerutils::microseconds2string(d_goldTime.value_or(microseconds(0))) << ", "
            << "PB Segment Time: "

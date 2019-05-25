@@ -10,7 +10,7 @@ TEST(TestSplit, TestUpdateEmptySplit)
     auto res = testSplit.updateTime(std::chrono::microseconds(12000), 
                                     std::chrono::microseconds(1200));
     
-    EXPECT_EQ(res._value, core::SplitState::GoldAhead);
+    EXPECT_EQ(res, core::SplitState::GoldAhead);
     EXPECT_EQ(testSplit.thisSegmentTime(), std::chrono::microseconds(1200));
     EXPECT_EQ(testSplit.thisSplitTime(), std::chrono::microseconds(12000));
 }
@@ -24,7 +24,7 @@ TEST(TestSplit, TestUpdateEqualPb)
     auto testSplit = core::Split("testSplit", goldTime, pbSegmentTime, pbSplitTime);
     auto res = testSplit.updateTime(microseconds(14000), pbSegmentTime);
 
-    EXPECT_EQ(res._value, core::SplitState::EqualPb);
+    EXPECT_EQ(res, core::SplitState::EqualPb);
     EXPECT_EQ(testSplit.thisSplitTime(), std::chrono::microseconds(14000));
     EXPECT_EQ(testSplit.pbSegmentTime(), testSplit.thisSegmentTime());
     EXPECT_EQ(testSplit.goldTime(), goldTime);
@@ -45,7 +45,7 @@ TEST(TestSplit, TestUpdateGoldAhead)
     auto res = testSplit.updateTime(thisSegmentTime, newGold);
 
     // THEN
-    EXPECT_EQ(res._value, core::SplitState::GoldAhead);
+    EXPECT_EQ(res, core::SplitState::GoldAhead);
 }
 
 TEST(TestSplit, TestUpdateGoldBehind)
@@ -63,7 +63,7 @@ TEST(TestSplit, TestUpdateGoldBehind)
     auto res = testSplit.updateTime(thisSegmentTime, newGold);
 
     // THEN
-    EXPECT_EQ(res._value, core::SplitState::GoldBehind);
+    EXPECT_EQ(res, core::SplitState::GoldBehind);
 }
 
 TEST(TestSplit, TestUpdateAheadGaining)
@@ -82,7 +82,7 @@ TEST(TestSplit, TestUpdateAheadGaining)
     auto res = testSplit.updateTime(thisSplit, thisSegment);
 
     // THEN
-    EXPECT_EQ(res._value, core::SplitState::AheadPbGainingTime);
+    EXPECT_EQ(res, core::SplitState::AheadPbGainingTime);
 }
 
 TEST(TestSplit, TestUpdateAheadLosing)
@@ -101,7 +101,7 @@ TEST(TestSplit, TestUpdateAheadLosing)
     auto res = testSplit.updateTime(thisSplit, thisSegment);
 
     // THEN
-    EXPECT_EQ(res._value, core::SplitState::AheadPbLosingTime);
+    EXPECT_EQ(res, core::SplitState::AheadPbLosingTime);
 }
 
 TEST(TestSplit, TestUpdateBehindGaining)
@@ -120,7 +120,7 @@ TEST(TestSplit, TestUpdateBehindGaining)
     auto res = testSplit.updateTime(thisSplit, thisSegment);
 
     // THEN
-    EXPECT_EQ(res._value, core::SplitState::BehindPbGainingTime);
+    EXPECT_EQ(res, core::SplitState::BehindPbGainingTime);
 }
 
 TEST(TestSplit, TestUpdateBehindLosing)
@@ -139,24 +139,24 @@ TEST(TestSplit, TestUpdateBehindLosing)
     auto res = testSplit.updateTime(thisSplit, thisSegment);
 
     // THEN
-    EXPECT_EQ(res._value, core::SplitState::BehindPbLosingTime);
+    EXPECT_EQ(res, core::SplitState::BehindPbLosingTime);
 }
 
 TEST(TestSplit, TestResetSplit)
 {
     auto testSplit = core::Split("testSplit");
 
-    EXPECT_EQ(testSplit.state()._value, core::SplitState::NotReached);   
+    EXPECT_EQ(testSplit.state(), core::SplitState::NotReached);   
 
     auto res = testSplit.updateTime(microseconds(15000), microseconds(1400));
-    EXPECT_EQ(res._value, core::SplitState::GoldAhead);
+    EXPECT_EQ(res, core::SplitState::GoldAhead);
     EXPECT_TRUE(testSplit.thisSegmentTime().has_value());
     EXPECT_TRUE(testSplit.thisSplitTime().has_value());
 
     res = testSplit.resetSplit();
-    EXPECT_EQ(res._value, core::SplitState::NotReached);
+    EXPECT_EQ(res, core::SplitState::NotReached);
 
-    EXPECT_EQ(testSplit.state()._value, core::SplitState::NotReached);
+    EXPECT_EQ(testSplit.state(), core::SplitState::NotReached);
     EXPECT_FALSE(testSplit.thisSegmentTime().has_value());
     EXPECT_FALSE(testSplit.thisSplitTime().has_value());
 }
@@ -170,7 +170,7 @@ TEST(TestSplit, TestUpdateSplitOnlyBehind)
     auto testSplit = core::Split("testSplit", goldTime, pbSegmentTime, pbSplitTime);
     auto res = testSplit.updateTime(microseconds(16000));
 
-    EXPECT_EQ(res._value, core::SplitState::BehindPbNoData);
+    EXPECT_EQ(res, core::SplitState::BehindPbNoData);
 }
 
 TEST(TestSplit, TestUpdateSplitOnlyAhead)
@@ -182,7 +182,7 @@ TEST(TestSplit, TestUpdateSplitOnlyAhead)
     auto testSplit = core::Split("testSplit", goldTime, pbSegmentTime, pbSplitTime);
     auto res = testSplit.updateTime(microseconds(14000));
 
-    EXPECT_EQ(res._value, core::SplitState::AheadPbNoData);
+    EXPECT_EQ(res, core::SplitState::AheadPbNoData);
 }
 
 TEST(TestSplit, TestUpdateSplitOnlyEqual)
@@ -194,5 +194,13 @@ TEST(TestSplit, TestUpdateSplitOnlyEqual)
     auto testSplit = core::Split("testSplit", goldTime, pbSegmentTime, pbSplitTime);
     auto res = testSplit.updateTime(microseconds(15000));
 
-    EXPECT_EQ(res._value, core::SplitState::EqualPb);
+    EXPECT_EQ(res, core::SplitState::EqualPb);
+}
+
+TEST(TestSplit, TestUpdateSplitOnlyOnNewSplit)
+{
+    auto testSplit = core::Split("testSplit");
+    auto res = testSplit.updateTime(microseconds(1111));
+
+    EXPECT_EQ(res, core::SplitState::NoDataPossible);
 }
