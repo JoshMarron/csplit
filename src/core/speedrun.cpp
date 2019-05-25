@@ -33,15 +33,39 @@ void Speedrun::start()
 SplitState Speedrun::split()
 {
     auto split = d_timer.split();
-    std::chrono::microseconds segment;
+    SplitState state(SplitState::NotReached);
+    
     if (d_currentSplit == 0)
     {
-        segment = split;
+        std::chrono::microseconds segment = split;
+        state = currentSplit().updateTime(split, segment);
     }
     else
     {
-        auto previousSplit = d_splits[d_currentSplit].thisSplitTime();
+        auto previousSplit = d_splits[d_currentSplit - 1].thisSplitTime();
+        if (previousSplit.has_value())
+        {
+            auto segment = split - previousSplit.value();
+            state = currentSplit().updateTime(split, segment);
+        }
+        else
+        {
+            state = currentSplit().updateTime(split);
+        }
     }
+    
+    ++d_currentSplit;
+    return state;
+}
+
+Split& Speedrun::currentSplit()
+{
+    return d_splits[d_currentSplit];
+}
+
+const Split& Speedrun::currentSplit() const
+{
+    return d_splits[d_currentSplit];
 }
 
 } // end namespace core

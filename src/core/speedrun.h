@@ -17,12 +17,14 @@ private:
     SplitIndex d_currentSplit;
     Timer d_timer;
     bool d_started;
+    Split& currentSplit();
 public:
     Speedrun(); // Initialize with no splits. This would allow splits to be added
     Speedrun(std::vector<Split> splits);
 
     void start();   // Could eventually take an optional delay
     SplitState split();
+    const Split& currentSplit() const;
 };
 
 } // end namespace core
