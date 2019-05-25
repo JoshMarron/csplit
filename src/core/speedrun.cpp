@@ -1,4 +1,5 @@
 #include "speedrun.h"
+#include "timerutils.h"
 
 #include <spdlog/spdlog.h>
 
@@ -33,6 +34,7 @@ void Speedrun::start()
 SplitState Speedrun::split()
 {
     auto split = d_timer.split();
+    SPDLOG_DEBUG("Splitting with time: {}", timerutils::microseconds2string(split));
     SplitState state(SplitState::NotReached);
     
     if (d_currentSplit == 0)

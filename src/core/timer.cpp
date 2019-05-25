@@ -25,7 +25,6 @@ std::chrono::microseconds Timer::split()
 std::chrono::microseconds Timer::elapsed() const
 {
     auto now = std::chrono::steady_clock::now();
-    spdlog::trace("Time elapsed since start: {}", now.time_since_epoch().count());
     return std::chrono::duration_cast<std::chrono::microseconds>(now - d_start);
 
 }
@@ -34,7 +33,6 @@ std::chrono::microseconds Timer::elapsedSince(SteadyPoint point) const
 {
     auto now = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(now - point);
-    spdlog::trace("Time elapsed since {}: {}", point.time_since_epoch().count(), duration.count());
     return duration;
 }
 
