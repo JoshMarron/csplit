@@ -148,7 +148,7 @@ TEST(TestSplit, TestResetSplit)
 
     EXPECT_EQ(testSplit.state()._value, core::SplitState::NotReached);   
 
-    auto res = testSplit.updateTime(microseconds(1400), microseconds(15000));
+    auto res = testSplit.updateTime(microseconds(15000), microseconds(1400));
     EXPECT_EQ(res._value, core::SplitState::GoldAhead);
     EXPECT_TRUE(testSplit.thisSegmentTime().has_value());
     EXPECT_TRUE(testSplit.thisSplitTime().has_value());
@@ -159,4 +159,40 @@ TEST(TestSplit, TestResetSplit)
     EXPECT_EQ(testSplit.state()._value, core::SplitState::NotReached);
     EXPECT_FALSE(testSplit.thisSegmentTime().has_value());
     EXPECT_FALSE(testSplit.thisSplitTime().has_value());
+}
+
+TEST(TestSplit, TestUpdateSplitOnlyBehind)
+{
+    auto goldTime = microseconds(1100);
+    auto pbSegmentTime = microseconds(1200);
+    auto pbSplitTime = microseconds(15000);
+
+    auto testSplit = core::Split("testSplit", goldTime, pbSegmentTime, pbSplitTime);
+    auto res = testSplit.updateTime(microseconds(16000));
+
+    EXPECT_EQ(res._value, core::SplitState::BehindPbNoData);
+}
+
+TEST(TestSplit, TestUpdateSplitOnlyAhead)
+{
+    auto goldTime = microseconds(1100);
+    auto pbSegmentTime = microseconds(1200);
+    auto pbSplitTime = microseconds(15000);
+
+    auto testSplit = core::Split("testSplit", goldTime, pbSegmentTime, pbSplitTime);
+    auto res = testSplit.updateTime(microseconds(14000));
+
+    EXPECT_EQ(res._value, core::SplitState::AheadPbNoData);
+}
+
+TEST(TestSplit, TestUpdateSplitOnlyEqual)
+{
+    auto goldTime = microseconds(1100);
+    auto pbSegmentTime = microseconds(1200);
+    auto pbSplitTime = microseconds(15000);
+
+    auto testSplit = core::Split("testSplit", goldTime, pbSegmentTime, pbSplitTime);
+    auto res = testSplit.updateTime(microseconds(15000));
+
+    EXPECT_EQ(res._value, core::SplitState::EqualPb);
 }
