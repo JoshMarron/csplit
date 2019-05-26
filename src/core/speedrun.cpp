@@ -2,6 +2,8 @@
 #include "timerutils.h"
 #include "logging.h"
 
+#include "timeattacksplitter.h"
+
 #include <spdlog/spdlog.h>
 
 namespace csplit {
@@ -12,6 +14,7 @@ Speedrun::Speedrun()
 , d_currentSplit(0)
 , d_timer()
 , d_started(false)
+, d_splitter()
 {}
 
 Speedrun::Speedrun(std::vector<Split> splits)
@@ -19,6 +22,7 @@ Speedrun::Speedrun(std::vector<Split> splits)
 , d_currentSplit(0)
 , d_timer()
 , d_started(false)
+, d_splitter(std::make_unique<TimeAttackSplitter>(splits))
 {}
 
 void Speedrun::start()
@@ -27,38 +31,20 @@ void Speedrun::start()
     spdlog::info("Run started!");
     if (d_splits.empty())
     {
-        spdlog::warn("Run started in simple timer mode. No splits can be made.");
+        SPDLOG_WARN("Run started without any splits loaded.");
     }
     d_started = true;
 }
 
 SplitState Speedrun::split()
 {
+    if (!d_started)
+    {
+        SPDLOG_WARN("A split was attempted before the run began.");
+        return SplitState::NoDataPossible;
+    }
     auto split = d_timer.split();
-    SPDLOG_DEBUG("Splitting with time: {}", timerutils::microseconds2string(split));
-    SplitState state(SplitState::NotReached);
-    
-    if (d_currentSplit == 0)
-    {
-        std::chrono::microseconds segment = split;
-        state = currentSplit().updateTime(split, segment);
-    }
-    else
-    {
-        auto previousSplit = d_splits[d_currentSplit - 1].thisSplitTime();
-        if (previousSplit.has_value())
-        {
-            auto segment = split - previousSplit.value();
-            state = currentSplit().updateTime(split, segment);
-        }
-        else
-        {
-            state = currentSplit().updateTime(split);
-        }
-    }
-    
-    ++d_currentSplit;
-    return state;
+    return d_splitter->split(split);
 }
 
 Split& Speedrun::currentSplit()

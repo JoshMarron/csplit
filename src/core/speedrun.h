@@ -1,9 +1,15 @@
 #pragma once
 
+#ifndef BETTER_ENUMS_STRICT_CONVERSION
+#define BETTER_ENUMS_STRICT_CONVERSION
+#endif
+
 #include <vector>
+#include <enum.h>
 
 #include "split.h"
 #include "timer.h"
+#include "splitter.h"
 
 namespace csplit {
 namespace core {
@@ -17,6 +23,8 @@ private:
     SplitIndex d_currentSplit;
     Timer d_timer;
     bool d_started;
+    std::unique_ptr<Splitter> d_splitter;
+
     Split& currentSplit();
 public:
     Speedrun(); // Initialize with no splits. This would allow splits to be added
