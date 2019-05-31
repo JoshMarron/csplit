@@ -1,7 +1,11 @@
 add_library(csplitcore timer.cpp
                        timerutils.cpp
                        split.cpp
-                       speedrun.cpp)
+                       speedrun.cpp
+                       splitter.cpp
+                       adhocsplitter.cpp
+                       timeattacksplitter.cpp
+                       )
 
 find_package(spdlog CONFIG REQUIRED)
 target_include_directories(csplitcore PUBLIC ${PROJECT_SOURCE_DIR}/include)

@@ -10,17 +10,13 @@ namespace csplit {
 namespace core {
 
 Speedrun::Speedrun()
-: d_splits()
-, d_currentSplit(0)
-, d_timer()
+: d_timer()
 , d_started(false)
 , d_splitter()
 {}
 
 Speedrun::Speedrun(std::vector<Split> splits)
-: d_splits(splits)
-, d_currentSplit(0)
-, d_timer()
+: d_timer()
 , d_started(false)
 , d_splitter(std::make_unique<TimeAttackSplitter>(splits))
 {}
@@ -29,7 +25,7 @@ void Speedrun::start()
 {
     d_timer.start();
     spdlog::info("Run started!");
-    if (d_splits.empty())
+    if (d_splitter->splits().empty())
     {
         SPDLOG_WARN("Run started without any splits loaded.");
     }
@@ -47,14 +43,15 @@ SplitState Speedrun::split()
     return d_splitter->split(splitTime);
 }
 
-Split& Speedrun::currentSplit()
+void Speedrun::addSplit(const Split& split)
 {
-    return d_splits[d_currentSplit];
-}
-
-const Split& Speedrun::currentSplit() const
-{
-    return d_splits[d_currentSplit];
+    if(!d_splitter->addSplit(split))
+    {
+        // Then we must be using an adhoc splitter. We can't do that anymore, so change
+        auto splits = std::vector<Split>();
+        splits.push_back(split);
+        d_splitter = std::make_unique<TimeAttackSplitter>(splits);
+    }
 }
 
 } // end namespace core

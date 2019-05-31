@@ -41,9 +41,25 @@ SplitState TimeAttackSplitter::split(const std::chrono::microseconds& time)
     return state;
 }
 
+bool TimeAttackSplitter::addSplit(const Split& split)
+{
+    d_splits.push_back(split);
+    return true;
+}
+
 Split& TimeAttackSplitter::currentSplit()
 {
     return d_splits[d_currentSplit];
+}
+
+std::optional<Split> TimeAttackSplitter::currentSplit() const
+{
+    return d_splits[d_currentSplit];
+}
+
+const std::vector<Split>& TimeAttackSplitter::splits() const
+{
+    return d_splits;
 }
 
 } // end namespace core

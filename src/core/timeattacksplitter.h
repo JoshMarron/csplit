@@ -19,7 +19,9 @@ private:
 public:
     TimeAttackSplitter(const std::vector<Split>& splits);
     SplitState split(const std::chrono::microseconds& time) override;
-    void addSplit(const Split& split);
+    bool addSplit(const Split& split) override;
+    std::optional<Split> currentSplit() const override;
+    const std::vector<Split>& splits() const override;
 };
 
 }

@@ -3,7 +3,7 @@ TOOLCHAIN_PATH=$(shell cat cmakeflags)
 .PHONY: build reconf run
 
 build:
-	cd build && make
+	cd build && make -j8 --no-print-directory
 
 conan:
 	rm -rf build && mkdir build && cd build && conan install .. && cmake ../

@@ -11,10 +11,13 @@ class Splitter
 {
 private:
 public:
-    Splitter();
+    Splitter() {}
     virtual ~Splitter() {}
 
     virtual SplitState split(const std::chrono::microseconds& time) = 0;
+    virtual bool addSplit(const Split& split) = 0;
+    virtual const std::vector<Split>& splits() const = 0;
+    virtual std::optional<Split> currentSplit() const = 0;
 };
 
 } // end namespace core

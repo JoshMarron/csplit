@@ -18,6 +18,9 @@ private:
 public:
     AdHocSplitter();
     SplitState split(const std::chrono::microseconds& time) override;
+    bool addSplit(const Split& split) override;
+    const std::vector<Split>& splits() const override;
+    std::optional<Split> currentSplit() const override;
 };
 
 } // end namespace core
