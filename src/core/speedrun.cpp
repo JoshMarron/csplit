@@ -43,8 +43,8 @@ SplitState Speedrun::split()
         SPDLOG_WARN("A split was attempted before the run began.");
         return SplitState::NoDataPossible;
     }
-    auto split = d_timer.split();
-    return d_splitter->split(split);
+    auto splitTime = d_timer.split();
+    return d_splitter->split(splitTime);
 }
 
 Split& Speedrun::currentSplit()
