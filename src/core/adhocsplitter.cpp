@@ -48,8 +48,8 @@ Split AdHocSplitter::createNewSplit()
 void AdHocSplitter::skip()
 {
     // Skipping in an AdHoc scenario is a noop
-    SPDLOG_ERROR("Skip attempted in AdHoc mode. This is a No-Op");
-    return;
+    SPDLOG_ERROR("FATAL - Skip attempted in no-op mode!");
+    assert(false);
 }
 
 // If we add a split, we're no longer AdHoc

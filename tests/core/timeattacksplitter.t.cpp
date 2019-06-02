@@ -80,3 +80,12 @@ TEST_F(TimeAttackSplitterTest, TestSplitAfterSkip)
     EXPECT_FALSE(updatedSplit.thisSegmentTime().has_value());
     EXPECT_EQ(updatedSplit.thisSplitTime(), time);
 }
+
+TEST_F(TimeAttackSplitterTest, TestAddSplit)
+{
+    core::Split newSplit("newSplit");
+    core::TimeAttackSplitter splitter(d_splits);
+
+    EXPECT_TRUE(splitter.addSplit(newSplit));
+    EXPECT_EQ(newSplit, splitter.splits().back());
+}

@@ -7,7 +7,7 @@
 #include <optional>
 #include <enum.h>
 
-#include <fmt/ostream.h>
+#include <spdlog/fmt/ostr.h>
 
 namespace csplit {
 namespace core {
@@ -40,8 +40,8 @@ private:
     PossibleTime d_pbSplitTime;
 public:
     Split(std::string name);
-    Split(std::string name, 
-          std::chrono::microseconds goldTime, 
+    Split(std::string name,
+          std::chrono::microseconds goldTime,
           std::chrono::microseconds pbSegmentTime,
           std::chrono::microseconds pbSplitTime);
 
@@ -60,13 +60,30 @@ public:
     SplitState resetSplit();
 
     void print(std::ostream& stream) const;
+    friend bool operator==(const Split& lhs, const Split& rhs);
+    friend bool operator!=(const Split& lhs, const Split& rhs);
 };
 
-template<typename OStream>
-OStream& operator<<(OStream& stream, const core::Split& split)
+inline
+std::ostream& operator<<(std::ostream& stream, const core::Split& split)
 {
     split.print(stream);
     return stream;
+}
+
+inline
+bool operator==(const Split& lhs, const Split& rhs)
+{
+    return lhs.d_name == rhs.d_name &&
+           lhs.d_goldTime == rhs.d_goldTime &&
+           lhs.d_pbSplitTime == rhs.d_pbSplitTime &&
+           lhs.d_pbSegmentTime == rhs.d_pbSegmentTime;
+}
+
+inline
+bool operator!=(const Split& lhs, const Split& rhs)
+{
+    return !(lhs == rhs);
 }
 
 } // end namespace core

@@ -7,9 +7,9 @@ using microseconds = std::chrono::microseconds;
 TEST(TestSplit, TestUpdateEmptySplit)
 {
     auto testSplit = core::Split("testSplit");
-    auto res = testSplit.updateTime(microseconds(12000), 
+    auto res = testSplit.updateTime(microseconds(12000),
                                     microseconds(1200));
-    
+
     EXPECT_EQ(res, core::SplitState::GoldAhead);
     EXPECT_EQ(testSplit.thisSegmentTime(), microseconds(1200));
     EXPECT_EQ(testSplit.thisSplitTime(), microseconds(12000));
@@ -38,7 +38,7 @@ TEST(TestSplit, TestUpdateGoldAhead)
     auto pbSplitTime = microseconds(14000);
     auto newGold = microseconds(1000);
     auto thisSegmentTime = microseconds(13500);
-    
+
     auto testSplit = core::Split("testSplit", goldTime, pbSegmentTime, pbSplitTime);
 
     // WHEN
@@ -146,7 +146,7 @@ TEST(TestSplit, TestResetSplit)
 {
     auto testSplit = core::Split("testSplit");
 
-    EXPECT_EQ(testSplit.state(), core::SplitState::NotReached);   
+    EXPECT_EQ(testSplit.state(), core::SplitState::NotReached);
 
     auto res = testSplit.updateTime(microseconds(15000), microseconds(1400));
     EXPECT_EQ(res, core::SplitState::GoldAhead);
@@ -203,4 +203,26 @@ TEST(TestSplit, TestUpdateSplitOnlyOnNewSplit)
     auto res = testSplit.updateTime(microseconds(1111));
 
     EXPECT_EQ(res, core::SplitState::NoDataPossible);
+}
+
+TEST(TestSplit, TestSplitEqualityEmptySplits)
+{
+    core::Split lhsSplit("testSplit");
+    core::Split rhsSplit("testSplit");
+
+    EXPECT_EQ(lhsSplit, rhsSplit);
+
+    core::Split secondRhsSplit("testSplit2");
+    EXPECT_NE(lhsSplit, secondRhsSplit);
+}
+
+TEST(TestSplit, TestSplitEquality)
+{
+    core::Split lhsSplit("testSplit", microseconds(2300), microseconds(1200), microseconds(1300));
+    core::Split rhsSplit("testSplit", microseconds(2300), microseconds(1200), microseconds(1300));
+
+    EXPECT_EQ(lhsSplit, rhsSplit);
+
+    core::Split secondRhsSplit("testSplit", microseconds(1400), microseconds(1200), microseconds(1300));
+    EXPECT_NE(lhsSplit, secondRhsSplit);
 }
