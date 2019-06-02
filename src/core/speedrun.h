@@ -18,7 +18,7 @@ namespace core {
 class Speedrun
 {
 private:
-    Timer d_timer;
+    std::unique_ptr<Timer> d_timer;
     bool d_started;
     std::unique_ptr<Splitter> d_splitter;
 
@@ -27,12 +27,18 @@ private:
 public:
     Speedrun(std::string gameName, std::string categoryName);
     Speedrun(std::string gameName, std::string categoryName, std::vector<Split> splits);
-    Speedrun(std::string gameName, std::string categoryName, std::unique_ptr<Splitter> splitter);
+    // Injection constructor
+    Speedrun(std::string gameName,
+             std::string categoryName,
+             std::unique_ptr<Splitter> splitter,
+             std::unique_ptr<Timer> timer);
 
     void start();   // Could eventually take an optional delay
     SplitState split();
     void addSplit(const Split& split);
 
+    const std::vector<Split>& splits() const;
+    std::optional<Split> currentSplit() const;
     const std::string& gameName() const;
     const std::string& categoryName() const;
     bool isInProgress() const;

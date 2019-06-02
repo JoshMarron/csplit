@@ -3,6 +3,7 @@
 #include "splitter.t.h"
 
 #include <core/speedrun.h>
+#include <core/steadytimer.h>
 
 using namespace csplit;
 using microseconds = std::chrono::microseconds;
@@ -15,7 +16,10 @@ protected:
 
     MockSplitterSpeedrunTest()
     : d_splitter(new MockSplitter())
-    , d_speedrun("testRun", "any%", std::unique_ptr<core::Splitter>(d_splitter))
+    , d_speedrun("testRun",
+                 "any%",
+                 std::unique_ptr<core::Splitter>(d_splitter),
+                 std::make_unique<core::SteadyTimer>())
     {}
 };
 
@@ -49,4 +53,13 @@ TEST_F(MockSplitterSpeedrunTest, TestDelegateToSplitter)
 TEST_F(MockSplitterSpeedrunTest, TestDieOnSplitBeforeStart)
 {
     EXPECT_DEATH(d_speedrun.split(), "");
+}
+
+TEST(SpeedrunTest, TestAddSplit)
+{
+    core::Speedrun run("testRun", "any%");
+    core::Split newSplit("testSplit");
+
+    run.addSplit(newSplit);
+    EXPECT_EQ(run.splits().back(), newSplit);
 }

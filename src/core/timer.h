@@ -8,15 +8,13 @@ namespace core {
 
 class Timer
 {
-private:
-    using SteadyPoint = std::chrono::steady_clock::time_point;
-    SteadyPoint d_start;
 public:
-    Timer();
-    void start();
-    std::chrono::microseconds elapsed() const;
-    std::chrono::microseconds split();
-    std::chrono::microseconds elapsedSince(SteadyPoint point) const;
+    using SteadyPoint = std::chrono::steady_clock::time_point;
+    virtual ~Timer() {}
+    virtual void start() = 0;
+    virtual std::chrono::microseconds elapsed() const = 0;
+    virtual std::chrono::microseconds split() const = 0;
+    virtual std::chrono::microseconds elapsedSince(SteadyPoint point) const = 0;
 };
 
 }

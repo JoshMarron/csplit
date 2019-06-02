@@ -12,6 +12,7 @@
 #include <spdlog/sinks/basic_file_sink.h>
 
 #include "core/timer.h"
+#include "core/steadytimer.h"
 #include "core/timerutils.h"
 #include "core/speedrun.h"
 
@@ -35,7 +36,7 @@ int main()
 
     spdlog::info("I AM CSPLIT. I AM STARTING.");
 
-    auto t = csplit::core::Timer();
+    auto t = csplit::core::SteadyTimer();
     t.start();
     std::this_thread::sleep_for(std::chrono::milliseconds(1230));
     auto splitTime = t.split();

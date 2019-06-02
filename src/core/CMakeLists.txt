@@ -5,6 +5,7 @@ add_library(csplitcore timer.cpp
                        splitter.cpp
                        adhocsplitter.cpp
                        timeattacksplitter.cpp
+                       steadytimer.cpp
                        )
 
 find_package(spdlog CONFIG REQUIRED)

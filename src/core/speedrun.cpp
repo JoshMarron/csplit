@@ -4,6 +4,7 @@
 
 #include "timeattacksplitter.h"
 #include "adhocsplitter.h"
+#include "steadytimer.h"
 
 #include <spdlog/spdlog.h>
 #include <utility>
@@ -12,7 +13,7 @@ namespace csplit {
 namespace core {
 
 Speedrun::Speedrun(std::string gameName, std::string categoryName)
-: d_timer()
+: d_timer(std::make_unique<SteadyTimer>())
 , d_started(false)
 , d_splitter(std::make_unique<AdHocSplitter>())
 , d_gameName(std::move(gameName))
@@ -20,15 +21,18 @@ Speedrun::Speedrun(std::string gameName, std::string categoryName)
 {}
 
 Speedrun::Speedrun(std::string gameName, std::string categoryName, std::vector<Split> splits)
-: d_timer()
+: d_timer(std::make_unique<SteadyTimer>())
 , d_started(false)
 , d_splitter(std::make_unique<TimeAttackSplitter>(splits))
 , d_gameName(std::move(gameName))
 , d_categoryName(std::move(categoryName))
 {}
 
-Speedrun::Speedrun(std::string gameName, std::string categoryName, std::unique_ptr<Splitter> splitter)
-: d_timer()
+Speedrun::Speedrun(std::string gameName,
+                   std::string categoryName,
+                   std::unique_ptr<Splitter> splitter,
+                   std::unique_ptr<Timer> timer)
+: d_timer(std::move(timer))
 , d_started(false)
 , d_splitter(std::move(splitter))
 , d_gameName(std::move(gameName))
@@ -37,7 +41,7 @@ Speedrun::Speedrun(std::string gameName, std::string categoryName, std::unique_p
 
 void Speedrun::start()
 {
-    d_timer.start();
+    d_timer->start();
     spdlog::info("Run started!");
     if (d_splitter->splits().empty())
     {
@@ -53,7 +57,7 @@ SplitState Speedrun::split()
         SPDLOG_ERROR("FATAL LOGIC ERROR: A split was attempted before the run started.");
         assert(false);
     }
-    auto splitTime = d_timer.split();
+    auto splitTime = d_timer->split();
     return d_splitter->split(splitTime);
 }
 
@@ -66,6 +70,16 @@ void Speedrun::addSplit(const Split& split)
         splits.push_back(split);
         d_splitter = std::make_unique<TimeAttackSplitter>(splits);
     }
+}
+
+const std::vector<Split>& Speedrun::splits() const
+{
+    return d_splitter->splits();
+}
+
+std::optional<Split> Speedrun::currentSplit() const
+{
+    return d_splitter->currentSplit();
 }
 
 const std::string& Speedrun::gameName() const
