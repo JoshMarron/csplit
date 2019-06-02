@@ -21,6 +21,7 @@ public:
     bool addSplit(const Split& split) override;
     const std::vector<Split>& splits() const override;
     std::optional<Split> currentSplit() const override;
+    void skip() override;
 };
 
 } // end namespace core

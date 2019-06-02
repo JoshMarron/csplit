@@ -15,6 +15,6 @@ run:
 	./build/src/csplit
 
 test:
-	cd build && make && make test
+	cd build && make --no-print-directory -j8 && make test
 test-verb:
-	cd build && make && ./tests/core/csplitcore.t.tsk
+	cd build && make --no-print-directory -j8 && ./tests/core/csplitcore.t.tsk

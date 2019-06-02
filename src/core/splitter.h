@@ -18,6 +18,7 @@ public:
     virtual bool addSplit(const Split& split) = 0;
     virtual const std::vector<Split>& splits() const = 0;
     virtual std::optional<Split> currentSplit() const = 0;
+    virtual void skip() = 0;
 };
 
 } // end namespace core

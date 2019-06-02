@@ -15,13 +15,14 @@ using SplitIndex = std::vector<Split>::size_type;
 private:
     SplitIndex d_currentSplit;
     std::vector<Split> d_splits;
-    Split& currentSplit();
+    Split& currentSplitMut();
 public:
     TimeAttackSplitter(const std::vector<Split>& splits);
     SplitState split(const std::chrono::microseconds& time) override;
     bool addSplit(const Split& split) override;
     std::optional<Split> currentSplit() const override;
     const std::vector<Split>& splits() const override;
+    void skip() override;
 };
 
 }

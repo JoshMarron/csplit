@@ -21,7 +21,7 @@ SplitState TimeAttackSplitter::split(const std::chrono::microseconds& time)
     if (d_currentSplit == 0)
     {
         std::chrono::microseconds segment = time;
-        state = currentSplit().updateTime(time, segment);
+        state = currentSplitMut().updateTime(time, segment);
     }
     else
     {
@@ -29,16 +29,22 @@ SplitState TimeAttackSplitter::split(const std::chrono::microseconds& time)
         if (previousSplit.has_value())
         {
             auto segment = time - previousSplit.value();
-            state = currentSplit().updateTime(time, segment);
+            state = currentSplitMut().updateTime(time, segment);
         }
         else
         {
-            state = currentSplit().updateTime(time);
+            state = currentSplitMut().updateTime(time);
         }
     }
 
     ++d_currentSplit;
     return state;
+}
+
+void TimeAttackSplitter::skip()
+{
+    SPDLOG_DEBUG("Split: {} has been skipped! Will remain in NotReached state.", currentSplitMut());
+    ++d_currentSplit;
 }
 
 bool TimeAttackSplitter::addSplit(const Split& split)
@@ -47,14 +53,18 @@ bool TimeAttackSplitter::addSplit(const Split& split)
     return true;
 }
 
-Split& TimeAttackSplitter::currentSplit()
+Split& TimeAttackSplitter::currentSplitMut()
 {
     return d_splits[d_currentSplit];
 }
 
 std::optional<Split> TimeAttackSplitter::currentSplit() const
 {
-    return d_splits[d_currentSplit];
+    if (d_currentSplit < d_splits.size())
+    {
+        return d_splits[d_currentSplit];
+    }
+    return std::nullopt;
 }
 
 const std::vector<Split>& TimeAttackSplitter::splits() const
