@@ -3,22 +3,36 @@
 #include "logging.h"
 
 #include "timeattacksplitter.h"
+#include "adhocsplitter.h"
 
 #include <spdlog/spdlog.h>
+#include <utility>
 
 namespace csplit {
 namespace core {
 
-Speedrun::Speedrun()
+Speedrun::Speedrun(std::string gameName, std::string categoryName)
 : d_timer()
 , d_started(false)
-, d_splitter()
+, d_splitter(std::make_unique<AdHocSplitter>())
+, d_gameName(std::move(gameName))
+, d_categoryName(std::move(categoryName))
 {}
 
-Speedrun::Speedrun(std::vector<Split> splits)
+Speedrun::Speedrun(std::string gameName, std::string categoryName, std::vector<Split> splits)
 : d_timer()
 , d_started(false)
 , d_splitter(std::make_unique<TimeAttackSplitter>(splits))
+, d_gameName(std::move(gameName))
+, d_categoryName(std::move(categoryName))
+{}
+
+Speedrun::Speedrun(std::string gameName, std::string categoryName, std::unique_ptr<Splitter> splitter)
+: d_timer()
+, d_started(false)
+, d_splitter(std::move(splitter))
+, d_gameName(std::move(gameName))
+, d_categoryName(std::move(categoryName))
 {}
 
 void Speedrun::start()
@@ -27,7 +41,7 @@ void Speedrun::start()
     spdlog::info("Run started!");
     if (d_splitter->splits().empty())
     {
-        SPDLOG_WARN("Run started without any splits loaded.");
+        SPDLOG_INFO("Run started without splits loaded, so they will be created ad hoc.");
     }
     d_started = true;
 }
@@ -36,8 +50,8 @@ SplitState Speedrun::split()
 {
     if (!d_started)
     {
-        SPDLOG_WARN("A split was attempted before the run began.");
-        return SplitState::NoDataPossible;
+        SPDLOG_ERROR("FATAL LOGIC ERROR: A split was attempted before the run started.");
+        assert(false);
     }
     auto splitTime = d_timer.split();
     return d_splitter->split(splitTime);
@@ -52,6 +66,21 @@ void Speedrun::addSplit(const Split& split)
         splits.push_back(split);
         d_splitter = std::make_unique<TimeAttackSplitter>(splits);
     }
+}
+
+const std::string& Speedrun::gameName() const
+{
+    return d_gameName;
+}
+
+const std::string& Speedrun::categoryName() const
+{
+    return d_categoryName;
+}
+
+bool Speedrun::isInProgress() const
+{
+    return d_started;
 }
 
 } // end namespace core

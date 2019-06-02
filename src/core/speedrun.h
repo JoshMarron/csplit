@@ -22,13 +22,20 @@ private:
     bool d_started;
     std::unique_ptr<Splitter> d_splitter;
 
+    std::string d_gameName;
+    std::string d_categoryName;
 public:
-    Speedrun(); // Initialize with no splits. This would allow splits to be added
-    Speedrun(std::vector<Split> splits);
+    Speedrun(std::string gameName, std::string categoryName);
+    Speedrun(std::string gameName, std::string categoryName, std::vector<Split> splits);
+    Speedrun(std::string gameName, std::string categoryName, std::unique_ptr<Splitter> splitter);
 
     void start();   // Could eventually take an optional delay
     SplitState split();
     void addSplit(const Split& split);
+
+    const std::string& gameName() const;
+    const std::string& categoryName() const;
+    bool isInProgress() const;
 };
 
 } // end namespace core

@@ -7,9 +7,9 @@
 namespace csplit {
 namespace core {
 
-TimeAttackSplitter::TimeAttackSplitter(const std::vector<Split>& splits)
+TimeAttackSplitter::TimeAttackSplitter(std::vector<Split> splits)
 : Splitter()
-, d_splits(splits)
+, d_splits(std::move(splits))
 , d_currentSplit(0)
 {}
 

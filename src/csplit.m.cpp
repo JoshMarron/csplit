@@ -39,7 +39,7 @@ int main()
     t.start();
     std::this_thread::sleep_for(std::chrono::milliseconds(1230));
     auto splitTime = t.split();
-    
+
     spdlog::info("Timer split at {}", splitTime.count());
     spdlog::info("Timer split at {}", csplit::core::timerutils::microseconds2string(splitTime));
 
@@ -50,7 +50,7 @@ int main()
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    auto run = csplit::core::Speedrun();
+    auto run = csplit::core::Speedrun("testRun", "any%");
     run.start();
 
     auto split = csplit::core::Split("testSplit");

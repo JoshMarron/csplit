@@ -17,7 +17,7 @@ private:
     std::vector<Split> d_splits;
     Split& currentSplitMut();
 public:
-    TimeAttackSplitter(const std::vector<Split>& splits);
+    TimeAttackSplitter(std::vector<Split> splits);
     SplitState split(const std::chrono::microseconds& time) override;
     bool addSplit(const Split& split) override;
     std::optional<Split> currentSplit() const override;

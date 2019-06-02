@@ -2,6 +2,7 @@ add_executable(csplitcore.t.tsk
                csplitcore.t.cpp
                timeattacksplitter.t.cpp
                adhocsplitter.t.cpp
+               speedrun.t.cpp
                split.t.cpp)
 
 find_package(GTest MODULE REQUIRED)

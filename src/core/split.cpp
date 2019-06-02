@@ -8,7 +8,7 @@ namespace csplit {
 namespace core {
 
 Split::Split(std::string name)
-: d_name(name)
+: d_name(std::move(name))
 , d_state(SplitState::NotReached)
 , d_goldTime()
 , d_pbSegmentTime()
@@ -17,11 +17,11 @@ Split::Split(std::string name)
 , d_pbSplitTime()
 {}
 
-Split::Split(std::string name, 
-             std::chrono::microseconds goldTime, 
+Split::Split(std::string name,
+             std::chrono::microseconds goldTime,
              std::chrono::microseconds pbSegmentTime,
              std::chrono::microseconds pbSplitTime)
-: d_name(name)
+: d_name(std::move(name))
 , d_state(SplitState::NotReached)
 , d_goldTime(goldTime)
 , d_pbSegmentTime(pbSegmentTime)
@@ -50,13 +50,13 @@ SplitState Split::updateTime(std::chrono::microseconds splitTime)
     {
         d_state = SplitState::EqualPb;
     }
-    
-    SPDLOG_DEBUG("SPLIT MADE. Name: {} - Split time only: {} - Result: {}", 
+
+    SPDLOG_DEBUG("SPLIT MADE. Name: {} - Split time only: {} - Result: {}",
                  d_name, splitTime.count(), d_state);
     return d_state;
 }
 
-SplitState Split::updateTime(std::chrono::microseconds splitTime, 
+SplitState Split::updateTime(std::chrono::microseconds splitTime,
                              std::chrono::microseconds segmentTime)
 {
     d_splitTime = splitTime;
@@ -66,29 +66,29 @@ SplitState Split::updateTime(std::chrono::microseconds splitTime,
     // Alternatively, is this an empty split? An empty split will always gold.
     if (segmentTime < d_goldTime.value_or(std::chrono::microseconds::max()))
     {
-        d_state = splitTime > d_pbSplitTime.value_or(std::chrono::microseconds::max()) ? 
-                                SplitState::GoldBehind : 
+        d_state = splitTime > d_pbSplitTime.value_or(std::chrono::microseconds::max()) ?
+                                SplitState::GoldBehind :
                                 SplitState::GoldAhead;
     }
 
     // Otherwise, we check how fast the split is vs the PB
     else if (segmentTime < d_pbSegmentTime)
     {
-        d_state = splitTime < d_pbSplitTime ? 
-                                SplitState::AheadPbGainingTime : 
-                                SplitState::BehindPbGainingTime;  
+        d_state = splitTime < d_pbSplitTime ?
+                                SplitState::AheadPbGainingTime :
+                                SplitState::BehindPbGainingTime;
     }
     else if (segmentTime > d_pbSegmentTime)
     {
-        d_state = splitTime < d_pbSplitTime ? 
-                                SplitState::AheadPbLosingTime : 
+        d_state = splitTime < d_pbSplitTime ?
+                                SplitState::AheadPbLosingTime :
                                 SplitState::BehindPbLosingTime;
     }
     else
     {
         d_state = SplitState::EqualPb;
     }
-    
+
     SPDLOG_DEBUG("SPLIT MADE. Name: {} - Split time: {} - Segment time: {}. Result {}", 
                  d_name, splitTime.count(), segmentTime.count(), d_state);
     return d_state;
@@ -110,7 +110,7 @@ void Split::print(std::ostream& stream) const
     using microseconds = std::chrono::microseconds;
     stream << "{[SPLIT] Name: " << d_name << ", "
            << "State: " << d_state << ", "
-           << "Gold Time: " 
+           << "Gold Time: "
            << timerutils::microseconds2string(d_goldTime.value_or(microseconds(0))) << ", "
            << "PB Segment Time: "
            << timerutils::microseconds2string(d_pbSegmentTime.value_or(microseconds(0))) << ", "
