@@ -13,7 +13,7 @@ namespace csplit {
 namespace core {
 
 Speedrun::Speedrun(std::string gameName, std::string categoryName)
-: d_timer(std::make_unique<SteadyTimer>())
+: d_timer(std::make_unique<SteadyTimer<>>())
 , d_started(false)
 , d_splitter(std::make_unique<AdHocSplitter>())
 , d_gameName(std::move(gameName))
@@ -21,7 +21,7 @@ Speedrun::Speedrun(std::string gameName, std::string categoryName)
 {}
 
 Speedrun::Speedrun(std::string gameName, std::string categoryName, std::vector<Split> splits)
-: d_timer(std::make_unique<SteadyTimer>())
+: d_timer(std::make_unique<SteadyTimer<>>())
 , d_started(false)
 , d_splitter(std::make_unique<TimeAttackSplitter>(splits))
 , d_gameName(std::move(gameName))

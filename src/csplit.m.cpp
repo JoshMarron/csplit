@@ -36,7 +36,7 @@ int main()
 
     spdlog::info("I AM CSPLIT. I AM STARTING.");
 
-    auto t = csplit::core::SteadyTimer();
+    auto t = csplit::core::SteadyTimer<>();
     t.start();
     std::this_thread::sleep_for(std::chrono::milliseconds(1230));
     auto splitTime = t.split();

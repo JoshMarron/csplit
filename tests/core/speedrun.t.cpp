@@ -2,6 +2,7 @@
 
 #include "mocksplitter.t.h"
 #include "mocktimer.t.h"
+#include "fakeclock.h"
 
 #include <core/speedrun.h>
 #include <core/steadytimer.h>
@@ -48,6 +49,8 @@ TEST_F(MockSplitterSpeedrunTest, TestDelegateToSplitter)
     std::vector<core::Split> emptyVec{};
     EXPECT_CALL(*d_splitter, split(_)).Times(1).WillOnce(Return(core::SplitState::GoldAhead));
     EXPECT_CALL(*d_splitter, splits()).Times(1).WillOnce(ReturnRef(emptyVec));
+    EXPECT_CALL(*d_timer, start()).Times(1);
+    EXPECT_CALL(*d_timer, split()).Times(1).WillOnce(Return(microseconds(15000)));
     d_speedrun.start();
     auto res = d_speedrun.split();
 
