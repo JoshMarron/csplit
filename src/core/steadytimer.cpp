@@ -27,7 +27,6 @@ std::chrono::microseconds SteadyTimer::elapsed() const
 {
     auto now = std::chrono::steady_clock::now();
     return std::chrono::duration_cast<std::chrono::microseconds>(now - d_start);
-
 }
 
 std::chrono::microseconds SteadyTimer::elapsedSince(SteadyPoint point) const

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "splitter.t.h"
+#include "mocksplitter.t.h"
+#include "mocktimer.t.h"
 
 #include <core/speedrun.h>
 #include <core/steadytimer.h>
@@ -12,14 +13,16 @@ class MockSplitterSpeedrunTest: public ::testing::Test
 {
 protected:
     MockSplitter* d_splitter;
+    MockTimer* d_timer;
     core::Speedrun d_speedrun;
 
     MockSplitterSpeedrunTest()
     : d_splitter(new MockSplitter())
+    , d_timer(new MockTimer())
     , d_speedrun("testRun",
                  "any%",
                  std::unique_ptr<core::Splitter>(d_splitter),
-                 std::make_unique<core::SteadyTimer>())
+                 std::unique_ptr<core::Timer>(d_timer))
     {}
 };
 
@@ -29,6 +32,7 @@ TEST_F(MockSplitterSpeedrunTest, TestStartRun)
 
     std::vector<core::Split> emptyVec{};
     EXPECT_CALL(*d_splitter, splits()).Times(1).WillOnce(ReturnRef(emptyVec));
+    EXPECT_CALL(*d_timer, start()).Times(1);
 
     d_speedrun.start();
 
