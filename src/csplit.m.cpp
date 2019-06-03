@@ -53,6 +53,8 @@ int main()
 
     auto run = csplit::core::Speedrun("testRun", "any%");
     run.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(2500));
+    run.split();
 
     auto split = csplit::core::Split("testSplit");
     split.updateTime(std::chrono::microseconds(15607434));

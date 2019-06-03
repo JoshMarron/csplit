@@ -4,6 +4,7 @@ add_executable(csplitcore.t.tsk
                adhocsplitter.t.cpp
                speedrun.t.cpp
                fakeclock.cpp
+               steadytimer.t.cpp
                split.t.cpp)
 
 find_package(GTest MODULE REQUIRED)

@@ -32,14 +32,14 @@ SteadyTimer<Clock>::SteadyTimer()
 template<typename Clock>
 void SteadyTimer<Clock>::start()
 {
-    d_start = std::chrono::steady_clock::now();
+    d_start = Clock::now();
     spdlog::info("Timer started. Initial value: {}", d_start.time_since_epoch().count());
 }
 
 template<typename Clock>
 std::chrono::microseconds SteadyTimer<Clock>::split() const
 {
-    auto now = std::chrono::steady_clock::now();
+    auto now = Clock::now();
     SPDLOG_DEBUG("Split made. Raw value: {}", now.time_since_epoch().count());
     return std::chrono::duration_cast<std::chrono::microseconds>(now - d_start);
 }
@@ -47,14 +47,14 @@ std::chrono::microseconds SteadyTimer<Clock>::split() const
 template<typename Clock>
 std::chrono::microseconds SteadyTimer<Clock>::elapsed() const
 {
-    auto now = std::chrono::steady_clock::now();
+    auto now = Clock::now();
     return std::chrono::duration_cast<std::chrono::microseconds>(now - d_start);
 }
 
 template<typename Clock>
 std::chrono::microseconds SteadyTimer<Clock>::elapsedSince(SteadyPoint point) const
 {
-    auto now = std::chrono::steady_clock::now();
+    auto now = Clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(now - point);
     return duration;
 }

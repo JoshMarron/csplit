@@ -31,6 +31,7 @@ SplitState AdHocSplitter::split(const std::chrono::microseconds& time)
     }
 
     d_splits.push_back(split);
+    SPDLOG_DEBUG("New ad-hoc split is: {}", split);
     return state;
 }
 
