@@ -74,5 +74,19 @@ std::optional<Split> AdHocSplitter::currentSplit() const
     return d_splits.back();
 }
 
+void AdHocSplitter::print(std::ostream& stream) const
+{
+    stream << "{[AdHocSplitter] splits: [";
+    for (auto iter = d_splits.cbegin(); iter != d_splits.cend(); ++iter)
+    {
+        if (iter != d_splits.cbegin())
+        {
+            stream << ", ";
+        }
+        stream << *iter;
+    }
+    stream << "]}";
+}
+
 } // end namespace core
 } // end namespace csplit

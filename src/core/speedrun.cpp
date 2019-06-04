@@ -72,6 +72,15 @@ void Speedrun::addSplit(const Split& split)
     }
 }
 
+void Speedrun::print(std::ostream& stream) const
+{
+    stream << "{[SPEEDRUN] gameName: " << d_gameName << ", "
+           << "categoryName: " << d_categoryName << ", "
+           << "started: " << d_started << ", "
+           << "splitter: " << *d_splitter << ", "
+           << "timer: " << *d_timer << "}";
+}
+
 const std::vector<Split>& Speedrun::splits() const
 {
     return d_splitter->splits();

@@ -23,6 +23,7 @@ public:
     std::optional<Split> currentSplit() const override;
     const std::vector<Split>& splits() const override;
     void skip() override;
+    void print(std::ostream& stream) const override;
 };
 
 }

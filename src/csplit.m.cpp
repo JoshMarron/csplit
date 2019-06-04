@@ -56,6 +56,8 @@ int main()
     std::this_thread::sleep_for(std::chrono::milliseconds(2500));
     run.split();
 
+    SPDLOG_INFO("{}", run);
+
     auto split = csplit::core::Split("testSplit");
     split.updateTime(std::chrono::microseconds(15607434));
     SPDLOG_INFO("Split is: {}", split);

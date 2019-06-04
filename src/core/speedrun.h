@@ -11,6 +11,8 @@
 #include "timer.h"
 #include "splitter.h"
 
+#include <spdlog/fmt/ostr.h>
+
 namespace csplit {
 namespace core {
 
@@ -42,7 +44,16 @@ public:
     const std::string& gameName() const;
     const std::string& categoryName() const;
     bool isInProgress() const;
+
+    void print(std::ostream& stream) const;
 };
+
+inline
+std::ostream& operator<<(std::ostream& stream, const core::Speedrun& run)
+{
+    run.print(stream);
+    return stream;
+}
 
 } // end namespace core
 } // end namespace csplit

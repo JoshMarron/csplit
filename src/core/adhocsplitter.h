@@ -22,6 +22,7 @@ public:
     const std::vector<Split>& splits() const override;
     std::optional<Split> currentSplit() const override;
     void skip() override;
+    void print(std::ostream& stream) const override;
 };
 
 } // end namespace core

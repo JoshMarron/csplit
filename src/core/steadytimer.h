@@ -22,6 +22,7 @@ public:
     std::chrono::microseconds elapsed() const override;
     std::chrono::microseconds split() const override;
     std::chrono::microseconds elapsedSince(SteadyPoint point) const;
+    void print(std::ostream& stream) const override;
 };
 
 template<typename Clock>
@@ -57,6 +58,12 @@ std::chrono::microseconds SteadyTimer<Clock>::elapsedSince(SteadyPoint point) co
     auto now = Clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(now - point);
     return duration;
+}
+
+template<typename Clock>
+void SteadyTimer<Clock>::print(std::ostream& stream) const
+{
+    stream << "{[SteadyTimer] started at: " << d_start.time_since_epoch().count() << "}";
 }
 
 }

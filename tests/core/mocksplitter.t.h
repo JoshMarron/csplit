@@ -13,4 +13,5 @@ public:
     MOCK_CONST_METHOD0(splits, const std::vector<csplit::core::Split>&());
     MOCK_CONST_METHOD0(currentSplit, std::optional<csplit::core::Split>());
     MOCK_METHOD0(skip, void());
+    MOCK_CONST_METHOD1(print, void(std::ostream&));
 };

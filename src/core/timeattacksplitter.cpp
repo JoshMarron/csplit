@@ -72,5 +72,23 @@ const std::vector<Split>& TimeAttackSplitter::splits() const
     return d_splits;
 }
 
+void TimeAttackSplitter::print(std::ostream& stream) const
+{
+    stream << "{[TimeAttackSplitter] splits: [";
+    for (auto iter = d_splits.cbegin(); iter != d_splits.cend(); ++iter)
+    {
+        if (iter != d_splits.cbegin())
+        {
+            stream << ", ";
+        }
+        if (*iter == currentSplit())
+        {
+            stream << "**CURRENT**:";
+        }
+        stream << *iter;
+    }
+    stream << "]}";
+}
+
 } // end namespace core
 } // end namespace csplit
